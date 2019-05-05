@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>用户注册</title>
+    <!-- Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="GBK">
+    <meta name="keywords" content="" />
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+
+        //用户对象  
+        function user(id, name, type, password) {  
+    	this.id = id;  
+    	this.name = name;  
+    	this.type = type;  
+    	this.password = password;  
+        }  
+
+        var xmlHttp; 
+
+        function createXMLHttpRequest() {//创建xmlhttprequest对象。 
+    	if (window.ActiveXObject) { 
+     		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+    	} 
+    	else if (window.XMLHttpRequest) { 
+        		xmlHttp = new XMLHttpRequest(); 
+   	} 
+         }
+      
+         function adduser(){
+	var uid = document.getElementById("userid").value;
+	//alert(uid);
+	var uname = document.getElementById("username").value;
+	var utype = document.getElementById("usertype").value;
+	var upassword = document.getElementById("userpassword").value;
+	//alert(uid + uname + utype + upassword);
+	var newuser = new user(uid,uname,utype,upassword);
+	var userasjson = JSON.stringify(newuser);
+	var url = "servlet/Adduser?timeStamp=" + new Date().getTime();  
+      
+    	createXMLHttpRequest(); 
+    	xmlHttp.open("POST", url, true);  
+    	xmlHttp.onreadystatechange = handleStateChange;  
+    	xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");      
+    	xmlHttp.send(userasjson);
+	//alert(xmlHttp.responseText);
+	//alert(123);
+         } 
+
+         //状态改变处理函数  
+         function handleStateChange() {  
+    	if(xmlHttp.readyState == 4) {  
+		//alert(123);
+        		if(xmlHttp.status == 200) {  
+            			alert("用户创建成功！"); 
+        		} 
+		else if(xmlHttp.status == 404){
+			alert(404);	
+			}
+			}  
+    	}
+    </script>
+    <!-- //Meta Tags -->
+
+    <!-- Style-sheets -->
+    <!-- Bootstrap Css -->
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- Bootstrap Css -->
+    <!-- Common Css -->
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <!--// Common Css -->
+    <!-- Fontawesome Css -->
+    <link href="css/fontawesome-all.css" rel="stylesheet">
+    <!--// Fontawesome Css -->
+    <!--// Style-sheets -->
+
+    <!--web-fonts-->
+    <link href="http://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!--//web-fonts-->
+</head>
+
+<body>
+    <div class="bg-page py-5">
+        <div class="container">
+            <!-- main-heading -->
+            <h2 class="main-title-w3layouts mb-2 text-center text-white">Register</h2>
+            <!--// main-heading -->
+            <div class="form-body-w3-agile text-center w-lg-50 w-sm-75 w-100 mx-auto mt-5">
+                    <div class="form-group">
+                        <label>用户账户</label>
+                        <input type="text" id="userid" class="form-control" placeholder="Enter userid" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>用户昵称</label>
+                        <input type="text"  id="username" class="form-control" placeholder="Enter nickname" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>账号类型</label>
+	        <select class="form-control"  id="usertype">
+		<option value ="worker">巡检员</option>
+		<option value ="admin">管理员</option>
+	        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>用户密码</label>
+                        <input type="password"  id="userpassword" class="form-control" placeholder="Password" required="">
+                    </div>
+                    <div class="form-group">
+                        <label>确认密码</label>
+                        <input type="password" class="form-control" placeholder="Password" required="">
+                    </div>
+                    <div class="form-check text-center">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Agree the terms and policy</label>
+                    </div>
+                    <button  class="btn btn-primary error-w3l-btn mt-sm-5 mt-3 px-4" onClick="adduser()">Submit</button>
+                <h1 class="paragraph-agileits-w3layouts mt-2">
+                    <a href="index.html">Back to Home</a>
+                </h1>
+            </div>
+
+            <!-- Copyright -->
+            <div class="copyright-w3layouts py-xl-3 py-2 mt-xl-5 mt-4 text-center">
+                <p>Copyright &copy; 2018.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+            </div>
+            <!--// Copyright -->
+        </div>
+    </div>
+
+
+    <!-- Required common Js -->
+    <script src='js/jquery-2.2.3.min.js'></script>
+    <!-- //Required common Js -->
+
+    <!-- Js for bootstrap working-->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- //Js for bootstrap working -->
+
+</body>
+
+</html>

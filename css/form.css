@@ -1,0 +1,167 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 12px;
+}
+body.index {
+	background: url(../images/bg.jpg) center top fixed;
+}
+a {
+	color: #0D7CEB;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+	color: #f60;
+}
+input[type='button'], input[type='submit'] {
+	background: #09c;
+	border: none;
+	color: #fff;
+	padding: 0 20px;
+	line-height: 24px;
+}
+input[type='text'], select {
+	border: 1px solid #ababab;
+	line-height: 20px;
+}
+
+.style1 {
+	font-size: 12px
+}
+.sblue {
+	font-family: "宋体";
+	font-size: 12px;
+	color: #0000ff;
+}
+.sgreen {
+	font-family: "宋体";
+	font-size: 12px;
+	color: #00ff00;
+}
+.sblack {
+	font-family: "宋体";
+	font-size: 12px;
+}
+.shui {
+	font-family: "宋体";
+	font-size: 12px;
+	color: #999999;
+}
+
+
+h1 {
+	padding-top: 10px;
+	font-size: 28px;
+	color: #fff;
+	line-height: 48px;
+	text-align: center;
+}
+.indexTable {
+	margin: 0 auto;
+	opacity: 0.96;
+	filter: alpha(opacity=96);
+}
+.indexTable tr th {
+	background: #bbd4ed;
+	color: #03c;
+	text-align: left;
+	line-height: 30px;
+	font-size: 14px;
+}
+.indexTable tr td {
+	border-bottom: 1px solid #ababab;
+	line-height: 24px;
+}
+.header {
+	width: 100%;
+	height: 30px;
+	padding: 6px 0;
+	background: #fafafa;
+	border-bottom: 1px solid #dedede;
+}
+.header h3 {
+	text-indent: 20px;
+	font-weight: normal;
+	margin: 0;
+	line-height: 30px;
+	font-size: 16px;
+}
+.header table,.header form {
+	margin-left: 20px;
+}
+.container {
+	margin: 15px;
+}
+.container h3 {
+	color: #09f;
+	font-size: 16px;
+	text-align: center;
+	background: #ebebeb;
+	margin: 0;
+	line-height: 36px;
+	border: 1px solid #dedede;
+	border-bottom: 0;
+}
+.container .date {
+	background: #dedede;
+	line-height: 24px;
+	text-align: right;
+	font-size: 12px;
+	padding-right: 10px;
+}
+.table {
+	margin-bottom: 15px;
+	border-right:1px solid #dedede;
+	border-top:1px solid #dedede;
+}
+.table tr td, .table tr th {
+	padding: 3px;
+	line-height: 20px;
+	border-left:1px solid #dedede;
+	border-bottom:1px solid #dedede;
+}
+.bgDp {
+	background: #800080;
+	color: #fff;
+}
+.bgDp td a, .bgDp .shui, .bgRed td a, .bgRed .shui, .bgLp td a, .bgLp .shui {
+	color: #fff;
+}
+.bgDp .sblack, .bgRed .sblack, .bgLp .sblack {
+	color: #CCE5FC;
+}
+.bgRed {
+	background: #f00;
+}
+.bgLp {
+	background: #f0f;
+}
+.formTable {
+	margin: 0 auto;
+	margin-bottom: 15px;
+	border-right: 1px solid #ababab;
+	border-top: 1px solid #ababab;
+}
+.formTable2 {
+	float:left;
+	margin: 0 auto;
+	margin-bottom: 15px;
+	border-right: 1px solid #ababab;
+	border-top: 1px solid #ababab;
+}
+.formTable tr td, .formTable tr th {
+	padding: 5px;
+	line-height: 20px;
+	border-left: 1px solid #ababab;
+	border-bottom: 1px solid #ababab;
+	font-size: 14px;
+}
+.formTable tr th {
+	background: #ebebeb;
+	font-weight: normal;
+	text-align: right;
+}

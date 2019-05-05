@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="GBK" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>地铁图缩放控件</title>
+<!-- Bootstrap Css -->
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<!-- Bootstrap Css -->
+<!-- Js for bootstrap working-->
+<script src="js/bootstrap.min.js"></script>
+<!-- //Js for bootstrap working -->
+<script type="text/javascript" src="https://api.map.baidu.com/api?type=subway&v=1.0&ak=LFXMqi5h9IlPbf0jBsXYfhRnTzzDutkV"></script>
+<style type="text/css">
+    #container{height:100%}
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript">
+    /**
+     * 从所有城市列表中获取北京信息
+     * 结果格式
+     * {
+     *     keyword: 'beijing',
+     *     name: '北京',
+     *     citycode: '131'
+     * }
+     */
+     /* globals BMapSub */
+    var subwayCityName = '广州';
+    var list = BMapSub.SubwayCitiesList;
+    var subwaycity = null;
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].name === subwayCityName) {
+            subwaycity = list[i];
+            break;
+        }
+    }
+    // 获取北京地铁数据-初始化地铁图
+    var subway = new BMapSub.Subway('container', subwaycity.citycode);
+    subway.setZoom(0.5);
+    var zoomControl  = new BMapSub.ZoomControl({
+        anchor: BMAPSUB_ANCHOR_BOTTOM_LEFT,
+        offset: new BMapSub.Size(50,200)
+    });
+    subway.addControl(zoomControl);
+
+</script>
+</body>
+</html>
