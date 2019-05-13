@@ -120,20 +120,39 @@
 	map.addControl(top_left_navigation);
 
 	// 添加定位控件
- 	 var geolocationControl = new BMap.GeolocationControl();
-  	geolocationControl.addEventListener("locationSuccess", function(e){
-  	// 定位成功事件
-  	var address = '';
-  	address += e.addressComponent.province;
-  	address += e.addressComponent.city;
-  	address += e.addressComponent.district;
- 	address += e.addressComponent.street;
- 	address += e.addressComponent.streetNumber;
-	alert("当前定位地址为：" + address);});
-	geolocationControl.addEventListener("locationError",function(e){
-    	// 定位失败事件
-	alert(e.message);});
-	map.addControl(geolocationControl);
+	function ZoomControl(){
+		// 默认停靠位置和偏移量
+	  	this.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
+	  	this.defaultOffset = new BMap.Size(10, 50);
+	}
+
+	// 通过JavaScript的prototype属性继承于BMap.Control
+	ZoomControl.prototype = new BMap.Control();
+
+	// 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+	// 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+	ZoomControl.prototype.initialize = function(map){
+		// 创建一个DOM元素
+		var div = document.createElement("div");
+		// 添加文字说明
+		div.appendChild(document.createTextNode("当前位置"));
+		// 设置样式
+		div.style.cursor = "pointer";
+		div.style.border = "1px solid gray";
+		div.style.backgroundColor = "white";
+		// 绑定事件,点击一次放大两级
+		div.onclick = function(e){
+			getLocation(3);
+		}
+		// 添加DOM元素到地图中
+		map.getContainer().appendChild(div);
+		// 将DOM元素返回
+		return div;
+	}
+	// 创建控件
+	var myZoomCtrl = new ZoomControl();
+	// 添加到地图当中
+	map.addControl(myZoomCtrl);
 
 	var size = new BMap.Size(40, 40);
 	map.addControl(new BMap.CityListControl({
@@ -141,6 +160,40 @@
     		offset: size,}));
 				// 编写自定义函数,创建标注
 	
+	function getLocation(flag)
+	{
+		if (navigator.geolocation&&flag=="3")
+		{  navigator.geolocation.getCurrentPosition(locate); }
+		else
+		{ x.innerHTML="该浏览器不支持获取地理位置。"; }
+	}
+
+
+	function locate(position) {   
+             		//var latlon = position.coords.latitude+','+position.coords.longitude;   
+             		//alert(latlon);
+             		var ggPoint = new BMap.Point(position.coords.longitude,position.coords.latitude);
+           		//坐标转换完之后的回调函数
+          		translateCallback = function (data){
+          			if(data.status === 0) {
+			var pt = data.points[0];
+			var marker = new BMap.Marker(pt);
+			map.addOverlay(marker);
+			map.centerAndZoom(pt, 20);
+			geoc.getLocation(pt, function(rs){
+				var addComp = rs.addressComponents;
+				alert(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber);
+			});      
+          		}}
+
+         		setTimeout(function(){
+        			var convertor = new BMap.Convertor();
+        			var pointArr = [];
+        			pointArr.push(ggPoint);
+        			convertor.translate(pointArr, 1, 5, translateCallback)
+          		}, 1000);
+	};
+
 	function addMarker(point){
 		var marker = new BMap.Marker(point);
 		marker.addEventListener("click",function(e){

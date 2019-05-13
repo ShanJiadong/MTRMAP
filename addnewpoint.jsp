@@ -525,14 +525,33 @@
          } 
 		 
 	function getlocation(){
-		var geolocation = new BMap.Geolocation();
-		geolocation.getCurrentPosition(function(e){
-			var nowlng = e.point.lng;
-			var nowlat = e.point.lat;
-			document.getElementById("lng").value = nowlng;
-			document.getElementById("lat").value = nowlat;
-		});
+		if (navigator.geolocation)
+		{  navigator.geolocation.getCurrentPosition(locate); }
+		else
+		{ x.innerHTML="该浏览器不支持获取地理位置。"; }
 	}
+
+	function locate(position) {   
+             		//var latlon = position.coords.latitude+','+position.coords.longitude;   
+             		//alert(latlon);
+             		var ggPoint = new BMap.Point(position.coords.longitude,position.coords.latitude);
+           		//坐标转换完之后的回调函数
+          		translateCallback = function (data){
+          			if(data.status === 0) {
+			var pt = data.points[0];
+			var nowlng = pt.lng;
+			var nowlat = pt.lat;
+			document.getElementById("lng").value = nowlng;
+			document.getElementById("lat").value = nowlat; 
+          		}}
+
+         		setTimeout(function(){
+        			var convertor = new BMap.Convertor();
+        			var pointArr = [];
+        			pointArr.push(ggPoint);
+        			convertor.translate(pointArr, 1, 5, translateCallback)
+          		}, 1000);
+	};
 
        $("#img_input").on("change", function(e) {
 

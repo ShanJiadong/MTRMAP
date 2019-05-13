@@ -139,18 +139,18 @@
 	//map.setMapType(BMAP_PERSPECTIVE_MAP);     //修改地图类型为3D地图
 	map.enableInertialDragging();
 	map.enableContinuousZoom();
+	var geoc = new BMap.Geocoder();   
+
+	var equipment_table;
 
 	function changecenter(lng,lat){
 		map.clearOverlays();
 		addpoint();
-		var equipment = new BMap.Point(lng, lat);
-		map.centerAndZoom(equipment, 20);
-		var geolocation = new BMap.Geolocation();
-		geolocation.getCurrentPosition(function(e){
-			var driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
-			driving.search(e.point, equipment);
-		});
+		equipment_table = new BMap.Point(lng, lat);
+		getLocation(2);
 	}
+
+	var equipment;
 
 	var points = [];
 	var n = document.getElementById('a').value;
@@ -170,27 +170,99 @@
         			}
         			var pointCollection = new BMap.PointCollection(points, options);  // 初始化PointCollection
         			pointCollection.addEventListener('click', function (e) {
-				var equipment = e.point;
-				var geolocation = new BMap.Geolocation();
-				geolocation.getCurrentPosition(function(e){
-					var distance = (map.getDistance(equipment,e.point)).toFixed(2); 
-					var an=confirm( "你是否要考勤？你与设备" + equipment.id +  "的距离为" + distance + "米");
-					if (an==true && distance <= 300)
-					{
-						attendance(equipment.id);
-    						alert("考勤成功!");
-					}
-					else
-					{
-   						alert("你尚未抵达设备区域！");
-					}
-				});
+				equipment = e.point;
+				getLocation(1);
         			});
         			map.addOverlay(pointCollection);  // 添加Overlay
     		} else {
         			alert('请在chrome、safari、IE8+以上浏览器查看本示例');
     		}
 	}
+
+	function getLocation(flag)
+	{
+		if (navigator.geolocation&&flag=="1")
+		{  navigator.geolocation.getCurrentPosition(showPosition); }
+		else if (navigator.geolocation&&flag=="2")
+		{  navigator.geolocation.getCurrentPosition(success); }
+		else if (navigator.geolocation&&flag=="3")
+		{  navigator.geolocation.getCurrentPosition(locate); }
+		else
+		{ x.innerHTML="该浏览器不支持获取地理位置。"; }
+	}
+
+	function success(position) {   
+		//var latlon = position.coords.latitude+','+position.coords.longitude;   
+             		//alert(latlon);
+		var ggPoint = new BMap.Point(position.coords.longitude,position.coords.latitude);
+           		//坐标转换完之后的回调函数
+          		translateCallback = function (data){
+          			if(data.status === 0) {
+			var driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
+			driving.search(data.points[0], equipment_table);
+          		}}
+
+         		setTimeout(function(){
+        			var convertor = new BMap.Convertor();
+        			var pointArr = [];
+        			pointArr.push(ggPoint);
+        			convertor.translate(pointArr, 1, 5, translateCallback)
+          		}, 1000);
+	};
+
+         	function showPosition(position) {   
+             		//var latlon = position.coords.latitude+','+position.coords.longitude;   
+             		//alert(latlon);
+             		var ggPoint = new BMap.Point(position.coords.longitude,position.coords.latitude);
+		//alert(equipment.id);
+           		//坐标转换完之后的回调函数
+          		translateCallback = function (data){
+          			if(data.status === 0) {
+			var distance = (map.getDistance(equipment,data.points[0])).toFixed(2); 
+			var an=confirm( "你是否要考勤？你与设备" + equipment.id +  "的距离为" + distance + "米");
+			if (an==true && distance <= 300)
+			{
+				attendance(equipment.id);
+    				alert("考勤成功!");
+			}
+			else
+			{
+   				alert("你尚未抵达设备区域！");
+			}
+          		}}
+
+         		setTimeout(function(){
+        			var convertor = new BMap.Convertor();
+        			var pointArr = [];
+        			pointArr.push(ggPoint);
+        			convertor.translate(pointArr, 1, 5, translateCallback)
+          		}, 1000);
+	};
+
+	function locate(position) {   
+             		//var latlon = position.coords.latitude+','+position.coords.longitude;   
+             		//alert(latlon);
+             		var ggPoint = new BMap.Point(position.coords.longitude,position.coords.latitude);
+           		//坐标转换完之后的回调函数
+          		translateCallback = function (data){
+          			if(data.status === 0) {
+			var pt = data.points[0];
+			var marker = new BMap.Marker(pt);
+			map.addOverlay(marker);
+			map.centerAndZoom(pt, 20);
+			geoc.getLocation(pt, function(rs){
+				var addComp = rs.addressComponents;
+				alert(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber);
+			});      
+          		}}
+
+         		setTimeout(function(){
+        			var convertor = new BMap.Convertor();
+        			var pointArr = [];
+        			pointArr.push(ggPoint);
+        			convertor.translate(pointArr, 1, 5, translateCallback)
+          		}, 1000);
+	};
 
 	//添加地图类型控件
 	map.addControl(new BMap.MapTypeControl({
@@ -215,24 +287,59 @@
 	map.addControl(top_left_navigation);
 
 	// 添加定位控件
- 	 var geolocationControl = new BMap.GeolocationControl();
-  	geolocationControl.addEventListener("locationSuccess", function(e){
+ 	// var geolocationControl = new BMap.GeolocationControl();
+  	//geolocationControl.addEventListener("locationSuccess", function(e){
   		// 定位成功事件
-  		var address = '';
-  		address += e.addressComponent.province;
-  		address += e.addressComponent.city;
-  		address += e.addressComponent.district;
- 		address += e.addressComponent.street;
- 		address += e.addressComponent.streetNumber;
-		alert("当前定位地址为：" + address);
-	});
-	geolocationControl.addEventListener("locationError",function(e){
+  		//var address = '';
+  		//address += e.addressComponent.province;
+  		//address += e.addressComponent.city;
+  		//address += e.addressComponent.district;
+ 		//address += e.addressComponent.street;
+ 		//address += e.addressComponent.streetNumber;
+		//alert("当前定位地址为：" + address);
+	//});
+	//geolocationControl.addEventListener("locationError",function(e){
     		// 定位失败事件
-		alert(e.message);
-	});
+		//alert(e.message);
+	//});
 		
 
-	map.addControl(geolocationControl);
+	//map.addControl(geolocationControl);
+
+	// 定义一个控件类,即function
+	function ZoomControl(){
+		// 默认停靠位置和偏移量
+	  	this.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
+	  	this.defaultOffset = new BMap.Size(10, 50);
+	}
+
+	// 通过JavaScript的prototype属性继承于BMap.Control
+	ZoomControl.prototype = new BMap.Control();
+
+	// 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+	// 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+	ZoomControl.prototype.initialize = function(map){
+		// 创建一个DOM元素
+		var div = document.createElement("div");
+		// 添加文字说明
+		div.appendChild(document.createTextNode("当前位置"));
+		// 设置样式
+		div.style.cursor = "pointer";
+		div.style.border = "1px solid gray";
+		div.style.backgroundColor = "white";
+		// 绑定事件,点击一次放大两级
+		div.onclick = function(e){
+			getLocation(3);
+		}
+		// 添加DOM元素到地图中
+		map.getContainer().appendChild(div);
+		// 将DOM元素返回
+		return div;
+	}
+	// 创建控件
+	var myZoomCtrl = new ZoomControl();
+	// 添加到地图当中
+	map.addControl(myZoomCtrl);
 
 	var size = new BMap.Size(40, 40);
 	map.addControl(new BMap.CityListControl({
